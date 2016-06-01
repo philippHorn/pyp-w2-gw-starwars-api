@@ -3,6 +3,7 @@ from starwars_api.exceptions import SWAPIClientError
 
 
 api_client = SWAPIClient()
+set_to_method = {'people': api_client.get_people, 'films': api_client.get_films}
 
 
 class BaseModel(object):
@@ -22,7 +23,7 @@ class BaseModel(object):
         Returns an object of current Model requesting data to SWAPI using
         the api_client.
         """
-        json_data = api_client.get_people(resource_id)
+        json_data = set_to_method[cls.RESOURCE_NAME](resource_id)
         return cls(json_data)
 
     @classmethod
@@ -47,7 +48,6 @@ class People(BaseModel):
 
     def __repr__(self):
         return u'Person: {0}'.format(decode(self.name))
-        #return u'Person: {0}'.format(self.name.decode('utf-8'))
 
 
 class Films(BaseModel):
@@ -62,12 +62,11 @@ class Films(BaseModel):
 
 class BaseQuerySet(object):
     
-    set_to_method = {'people': api_client.get_people, 'films': api_client.get_films}
     set_to_class = {'people': People, 'films': Films}
     
     def __init__(self):
         self.classname = self.set_to_class[self.RESOURCE_NAME]
-        self.get_item = self.set_to_method[self.RESOURCE_NAME]
+        self.get_item = set_to_method[self.RESOURCE_NAME]
         self.item_count = 1
         self.page_count = 1
         self.list_index = 0
@@ -78,7 +77,6 @@ class BaseQuerySet(object):
         self.item_count = 1
         self.page_count = 1
         self.list_index = 0
-        self.max_items = self.get_item(page=self.page_count)['count']
         return self
         
 
