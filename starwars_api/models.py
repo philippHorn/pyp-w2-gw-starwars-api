@@ -38,9 +38,6 @@ class BaseModel(object):
             return FilmQuerySet()
         
 
-def decode(string):
-    return "".join((char for char in string if char in "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"))
-
 class People(BaseModel):
     """Representing a single person"""
     RESOURCE_NAME = 'people'
